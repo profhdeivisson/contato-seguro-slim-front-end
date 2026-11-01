@@ -4,16 +4,12 @@ import {
     Button,
     Card,
     Col,
-    Divider,
-    Empty,
     Grid,
     Input,
-    Pagination,
     Row,
     Space,
     Spin,
     type TableColumnsType,
-    Tag,
     Typography,
 } from 'antd';
 
@@ -34,13 +30,6 @@ const STATUS_LABELS: Record<Record.Status, string> = {
     investigation_in_progress: 'Investigação em andamento',
     resolved: 'Resolvido',
     archived: 'Arquivado',
-};
-
-const STATUS_COLORS: Record<Record.Status, string> = {
-    awaiting_investigation: 'orange',
-    investigation_in_progress: 'blue',
-    resolved: 'green',
-    archived: 'default',
 };
 
 function useIsMobile() {
@@ -74,11 +63,10 @@ function RecordsContent() {
 
     const isMobile = useIsMobile();
     const [selectedRecord, setSelectedRecord] = useState<Record.Model | null>(null);
+    const [selectedRowKey, setSelectedRowKey] = useState<number | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [anonymityMap, setAnonymityMap] = useState<Record<number, boolean>>({});
     const [searchText, setSearchText] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
 
     const filteredRecords = useMemo(() => {
         if (!searchText.trim()) {
@@ -92,14 +80,13 @@ function RecordsContent() {
         });
     }, [records, searchText]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchText]);
-
-    const paginatedRecords = useMemo(() => {
-        const start = (currentPage - 1) * pageSize;
-        return filteredRecords.slice(start, start + pageSize);
-    }, [filteredRecords, currentPage]);
+    const activeRecord = useMemo(() => {
+        if (selectedRowKey === null) return null;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].id === selectedRowKey) return records[i];
+        }
+        return null;
+    }, [records, selectedRowKey]);
 
     const handleOpenInvolvements = (record: Record.Model) => {
         setSelectedRecord(record);
@@ -204,109 +191,73 @@ function RecordsContent() {
                     </Col>
                 </Row>
 
-                {isMobile ? (
-                    <Spin spinning={isLoading}>
-                        {filteredRecords.length === 0 ? (
-                            <Empty
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                description="Não há dados"
-                            />
-                        ) : (
-                            <div>
-                                {paginatedRecords.map(record => {
-                                    const isAnonymous = anonymityMap[record.id];
-                                    const statusKey = record.status as Record.Status;
-                                    const tagColor = STATUS_COLORS[statusKey] ? STATUS_COLORS[statusKey] : 'default';
-                                    const statusText = STATUS_LABELS[statusKey] ? STATUS_LABELS[statusKey] : record.status;
-
-                                    return (
-                                        <Card
-                                            key={record.id}
-                                            size="small"
-                                            style={{
-                                                marginBottom: 12,
-                                                borderRadius: 8,
-                                                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                    marginBottom: 8,
-                                                }}
-                                            >
-                                                <Space>
-                                                    <Typography.Text strong type="secondary">
-                                                        #{record.id}
-                                                    </Typography.Text>
-                                                    <Tag color={tagColor}>
-                                                        {statusText}
-                                                    </Tag>
-                                                </Space>
-
-                                                <span
-                                                    style={{ cursor: 'pointer' }}
-                                                    onClick={() => handleOpenInvolvements(record)}
-                                                    title="Gerenciar pessoas envolvidas neste relato"
-                                                >
-                                                    {isAnonymous === undefined ? (
-                                                        <Spin size="small" />
-                                                    ) : (
-                                                        <AnonymityTag isAnonymous={isAnonymous} />
-                                                    )}
-                                                </span>
-                                            </div>
-
-                                            <Typography.Title level={5} style={{ margin: '4px 0 8px 0', fontSize: 15 }}>
-                                                {record.title}
-                                            </Typography.Title>
-
-                                            {record.description && (
-                                                <Typography.Paragraph
-                                                    type="secondary"
-                                                    ellipsis={{ rows: 2 }}
-                                                    style={{ marginBottom: 8, fontSize: 13 }}
-                                                >
-                                                    {record.description}
-                                                </Typography.Paragraph>
-                                            )}
-
-                                            <Divider style={{ margin: '8px 0' }} />
-
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                <RecordsActionsCell
-                                                    record={record}
-                                                    onOpenInvolvements={handleOpenInvolvements}
-                                                />
-                                            </div>
-                                        </Card>
-                                    );
-                                })}
-
-                                {filteredRecords.length > pageSize && (
-                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-                                        <Pagination
-                                            current={currentPage}
-                                            pageSize={pageSize}
-                                            total={filteredRecords.length}
-                                            onChange={page => setCurrentPage(page)}
-                                            size="small"
-                                            showSizeChanger={false}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </Spin>
-                ) : (
-                    <Table
-                        columns={columns}
-                        dataSource={filteredRecords}
-                        loading={isLoading}
-                    />
+                {isMobile && activeRecord && (
+                    <Card
+                        size="small"
+                        style={{
+                            marginBottom: 16,
+                            background: '#f0f5ff',
+                            borderColor: '#adc6ff',
+                            borderRadius: 8,
+                        }}
+                    >
+                        <Row justify="space-between" align="middle" gutter={[8, 8]}>
+                            <Col xs={24} sm={14}>
+                                <Space>
+                                    <Typography.Text strong style={{ color: '#1d39c4' }}>
+                                        Relato #{activeRecord.id} selecionado:
+                                    </Typography.Text>
+                                    <Typography.Text ellipsis style={{ maxWidth: 180 }}>
+                                        {activeRecord.title}
+                                    </Typography.Text>
+                                </Space>
+                            </Col>
+                            <Col xs={24} sm={10} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <Space size="middle">
+                                    <RecordsActionsCell
+                                        record={activeRecord}
+                                        onOpenInvolvements={handleOpenInvolvements}
+                                    />
+                                    <Button
+                                        size="small"
+                                        type="text"
+                                        onClick={() => setSelectedRowKey(null)}
+                                        title="Desmarcar seleção"
+                                    >
+                                        ✕
+                                    </Button>
+                                </Space>
+                            </Col>
+                        </Row>
+                    </Card>
                 )}
+
+                {isMobile && !activeRecord && (
+                    <div style={{ marginBottom: 12 }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+                            💡 Toque em uma linha para selecionar e exibir as ações disponíveis.
+                        </Typography.Text>
+                    </div>
+                )}
+
+                <Table
+                    columns={columns}
+                    dataSource={filteredRecords}
+                    loading={isLoading}
+                    rowSelection={isMobile ? {
+                        type: 'radio',
+                        selectedRowKeys: selectedRowKey !== null ? [selectedRowKey] : [],
+                        onChange: keys => {
+                            setSelectedRowKey(keys.length > 0 ? (keys[0] as number) : null);
+                        },
+                    } : undefined}
+                    onRow={isMobile ? record => ({
+                        onClick: () => {
+                            setSelectedRowKey(prev => (prev === record.id ? null : record.id));
+                        },
+                        style: { cursor: 'pointer' },
+                    }) : undefined}
+                />
             </main>
 
             <Show when={isCreateModalVisible}>

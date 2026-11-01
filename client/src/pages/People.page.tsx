@@ -4,14 +4,10 @@ import {
     Button,
     Card,
     Col,
-    Divider,
-    Empty,
     Grid,
     Input,
-    Pagination,
     Row,
     Space,
-    Spin,
     type TableColumnsType,
     Typography,
 } from 'antd';
@@ -88,9 +84,8 @@ function PeopleContent() {
     } = usePeopleContext();
 
     const isMobile = useIsMobile();
+    const [selectedRowKey, setSelectedRowKey] = useState<number | null>(null);
     const [searchText, setSearchText] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
 
     const filteredPeople = useMemo(() => {
         if (!searchText.trim()) {
@@ -107,14 +102,13 @@ function PeopleContent() {
         });
     }, [people, searchText]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchText]);
-
-    const paginatedPeople = useMemo(() => {
-        const start = (currentPage - 1) * pageSize;
-        return filteredPeople.slice(start, start + pageSize);
-    }, [filteredPeople, currentPage]);
+    const activePerson = useMemo(() => {
+        if (selectedRowKey === null) return null;
+        for (let i = 0; i < people.length; i++) {
+            if (people[i].id === selectedRowKey) return people[i];
+        }
+        return null;
+    }, [people, selectedRowKey]);
 
     return (
         <Fragment>
@@ -148,79 +142,70 @@ function PeopleContent() {
                     </Col>
                 </Row>
 
-                {isMobile ? (
-                    <Spin spinning={isLoading}>
-                        {filteredPeople.length === 0 ? (
-                            <Empty
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                description="Não há dados"
-                            />
-                        ) : (
-                            <div>
-                                {paginatedPeople.map(person => (
-                                    <Card
-                                        key={person.id}
+                {isMobile && activePerson && (
+                    <Card
+                        size="small"
+                        style={{
+                            marginBottom: 16,
+                            background: '#f0f5ff',
+                            borderColor: '#adc6ff',
+                            borderRadius: 8,
+                        }}
+                    >
+                        <Row justify="space-between" align="middle" gutter={[8, 8]}>
+                            <Col xs={24} sm={14}>
+                                <Space>
+                                    <Typography.Text strong style={{ color: '#1d39c4' }}>
+                                        Pessoa #{activePerson.id} selecionada:
+                                    </Typography.Text>
+                                    <Typography.Text ellipsis style={{ maxWidth: 180 }}>
+                                        {activePerson.name}
+                                    </Typography.Text>
+                                </Space>
+                            </Col>
+                            <Col xs={24} sm={10} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <Space size="middle">
+                                    <PeopleActionsCell person={activePerson} />
+                                    <Button
                                         size="small"
-                                        style={{
-                                            marginBottom: 12,
-                                            borderRadius: 8,
-                                            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                                        }}
+                                        type="text"
+                                        onClick={() => setSelectedRowKey(null)}
+                                        title="Desmarcar seleção"
                                     >
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                                            <Typography.Text strong type="secondary">
-                                                #{person.id}
-                                            </Typography.Text>
-                                            <Typography.Text strong style={{ fontSize: 15 }}>
-                                                {person.name}
-                                            </Typography.Text>
-                                        </div>
-
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, margin: '8px 0', fontSize: 13 }}>
-                                            <div>
-                                                <Typography.Text type="secondary">CPF: </Typography.Text>
-                                                <Typography.Text>{formatCpf(person.cpf)}</Typography.Text>
-                                            </div>
-                                            <div>
-                                                <Typography.Text type="secondary">E-mail: </Typography.Text>
-                                                <Typography.Text>{person.email}</Typography.Text>
-                                            </div>
-                                            <div>
-                                                <Typography.Text type="secondary">Nascimento: </Typography.Text>
-                                                <Typography.Text>{dayjs(person.birth_date).format('DD/MM/YYYY')}</Typography.Text>
-                                            </div>
-                                        </div>
-
-                                        <Divider style={{ margin: '8px 0' }} />
-
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                            <PeopleActionsCell person={person} />
-                                        </div>
-                                    </Card>
-                                ))}
-
-                                {filteredPeople.length > pageSize && (
-                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-                                        <Pagination
-                                            current={currentPage}
-                                            pageSize={pageSize}
-                                            total={filteredPeople.length}
-                                            onChange={page => setCurrentPage(page)}
-                                            size="small"
-                                            showSizeChanger={false}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </Spin>
-                ) : (
-                    <Table
-                        columns={COLUMNS}
-                        dataSource={filteredPeople}
-                        loading={isLoading}
-                    />
+                                        ✕
+                                    </Button>
+                                </Space>
+                            </Col>
+                        </Row>
+                    </Card>
                 )}
+
+                {isMobile && !activePerson && (
+                    <div style={{ marginBottom: 12 }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+                            💡 Toque em uma linha para selecionar e exibir as ações disponíveis.
+                        </Typography.Text>
+                    </div>
+                )}
+
+                <Table
+                    columns={COLUMNS}
+                    dataSource={filteredPeople}
+                    loading={isLoading}
+                    rowSelection={isMobile ? {
+                        type: 'radio',
+                        selectedRowKeys: selectedRowKey !== null ? [selectedRowKey] : [],
+                        onChange: keys => {
+                            setSelectedRowKey(keys.length > 0 ? (keys[0] as number) : null);
+                        },
+                    } : undefined}
+                    onRow={isMobile ? record => ({
+                        onClick: () => {
+                            setSelectedRowKey(prev => (prev === record.id ? null : record.id));
+                        },
+                        style: { cursor: 'pointer' },
+                    }) : undefined}
+                />
             </main>
 
             <Show when={isCreateModalVisible}>
