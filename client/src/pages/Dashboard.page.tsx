@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router';
 
 import {
     Alert,
-    Button,
     Card,
     Col,
-    Divider,
     Progress,
     Row,
     Space,
@@ -187,72 +185,49 @@ export function Dashboard() {
                 </Row>
 
                 <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-                    <Col xs={24} md={14}>
-                        <Card title="Distribuição de Relatos por Status" style={{ height: '100%' }}>
-                            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Space>
-                                        <ClockCircleOutlined style={{ color: '#fa8c16' }} />
-                                        <Typography.Text>Aguardando investigação</Typography.Text>
-                                    </Space>
-                                    <Tag color="orange">{statusStats.awaiting}</Tag>
-                                </div>
-                                <Divider style={{ margin: '8px 0' }} />
+                    <Col span={24}>
+                        <Card title="Distribuição de Relatos por Status">
+                            <Row gutter={[16, 16]}>
+                                <Col xs={24} sm={12} md={6}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#fffbe6', borderRadius: 8, border: '1px solid #ffe58f' }}>
+                                        <Space>
+                                            <ClockCircleOutlined style={{ color: '#fa8c16', fontSize: 16 }} />
+                                            <Typography.Text>Aguardando investigação</Typography.Text>
+                                        </Space>
+                                        <Tag color="orange" style={{ fontSize: 14, padding: '2px 8px' }}>{statusStats.awaiting}</Tag>
+                                    </div>
+                                </Col>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Space>
-                                        <FileSearchOutlined style={{ color: '#1677ff' }} />
-                                        <Typography.Text>Investigação em andamento</Typography.Text>
-                                    </Space>
-                                    <Tag color="blue">{statusStats.inProgress}</Tag>
-                                </div>
-                                <Divider style={{ margin: '8px 0' }} />
+                                <Col xs={24} sm={12} md={6}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#e6f4ff', borderRadius: 8, border: '1px solid #91caff' }}>
+                                        <Space>
+                                            <FileSearchOutlined style={{ color: '#1677ff', fontSize: 16 }} />
+                                            <Typography.Text>Investigação em andamento</Typography.Text>
+                                        </Space>
+                                        <Tag color="blue" style={{ fontSize: 14, padding: '2px 8px' }}>{statusStats.inProgress}</Tag>
+                                    </div>
+                                </Col>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Space>
-                                        <CheckCircleOutlined style={{ color: '#52c41a' }} />
-                                        <Typography.Text>Resolvidos</Typography.Text>
-                                    </Space>
-                                    <Tag color="green">{statusStats.resolved}</Tag>
-                                </div>
-                                <Divider style={{ margin: '8px 0' }} />
+                                <Col xs={24} sm={12} md={6}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#f6ffed', borderRadius: 8, border: '1px solid #b7eb8f' }}>
+                                        <Space>
+                                            <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 16 }} />
+                                            <Typography.Text>Resolvidos</Typography.Text>
+                                        </Space>
+                                        <Tag color="green" style={{ fontSize: 14, padding: '2px 8px' }}>{statusStats.resolved}</Tag>
+                                    </div>
+                                </Col>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Space>
-                                        <InboxOutlined style={{ color: '#8c8c8c' }} />
-                                        <Typography.Text>Arquivados</Typography.Text>
-                                    </Space>
-                                    <Tag color="default">{statusStats.archived}</Tag>
-                                </div>
-                            </Space>
-                        </Card>
-                    </Col>
-
-                    <Col xs={24} md={10}>
-                        <Card title="Ações Rápidas" style={{ height: '100%' }}>
-                            <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                                <Button
-                                    block
-                                    icon={<AuditOutlined />}
-                                    onClick={() => navigate('/records')}
-                                >
-                                    Gerenciar Relatos
-                                </Button>
-                                <Button
-                                    block
-                                    icon={<UserOutlined />}
-                                    onClick={() => navigate('/people')}
-                                >
-                                    Gerenciar Pessoas
-                                </Button>
-                                <Button
-                                    block
-                                    icon={<BuildOutlined />}
-                                    onClick={() => navigate('/companies')}
-                                >
-                                    Gerenciar Empresas
-                                </Button>
-                            </Space>
+                                <Col xs={24} sm={12} md={6}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#fafafa', borderRadius: 8, border: '1px solid #d9d9d9' }}>
+                                        <Space>
+                                            <InboxOutlined style={{ color: '#8c8c8c', fontSize: 16 }} />
+                                            <Typography.Text>Arquivados</Typography.Text>
+                                        </Space>
+                                        <Tag color="default" style={{ fontSize: 14, padding: '2px 8px' }}>{statusStats.archived}</Tag>
+                                    </div>
+                                </Col>
+                            </Row>
                         </Card>
                     </Col>
                 </Row>
