@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { App, Button, Popconfirm, Space } from 'antd';
+import { App, Button, Popconfirm, Space, Tooltip } from 'antd';
 
 import { DeleteOutlined, EditOutlined, TeamOutlined } from '@ant-design/icons';
 import { handleServiceError, hasServiceError } from '@domain/@shared/service.helper';
@@ -47,20 +47,22 @@ export function RecordsActionsCell({ record, onOpenInvolvements }: Props) {
     return (
         <Space size="middle">
             {onOpenInvolvements && (
-                <Button
-                    type="text"
-                    icon={<TeamOutlined />}
-                    title="Envolvidos"
-                    onClick={() => onOpenInvolvements(record)}
-                />
+                <Tooltip title="Pessoas Envolvidas">
+                    <Button
+                        type="text"
+                        icon={<TeamOutlined />}
+                        onClick={() => onOpenInvolvements(record)}
+                    />
+                </Tooltip>
             )}
 
-            <Button
-                type="text"
-                icon={<EditOutlined />}
-                title="Editar"
-                onClick={handleEdit}
-            />
+            <Tooltip title="Editar">
+                <Button
+                    type="text"
+                    icon={<EditOutlined />}
+                    onClick={handleEdit}
+                />
+            </Tooltip>
 
             <Popconfirm
                 title="Excluir relato"
@@ -74,12 +76,13 @@ export function RecordsActionsCell({ record, onOpenInvolvements }: Props) {
                 onConfirm={handleDelete}
                 onCancel={() => setIsPopconfirmVisible(false)}
             >
-                <Button
-                    type="text"
-                    icon={<DeleteOutlined />}
-                    title="Excluir"
-                    onClick={() => setIsPopconfirmVisible(true)}
-                />
+                <Tooltip title="Excluir">
+                    <Button
+                        type="text"
+                        icon={<DeleteOutlined />}
+                        onClick={() => setIsPopconfirmVisible(true)}
+                    />
+                </Tooltip>
             </Popconfirm>
         </Space>
     );

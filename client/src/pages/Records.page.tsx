@@ -12,7 +12,7 @@ import { CreateRecordModal } from '@domain/record/components/CreateRecordModal';
 import { EditRecordModal } from '@domain/record/components/EditRecordModal';
 import { RecordsActionsCell } from '@domain/record/components/RecordsActionsCell';
 import type { Record } from '@domain/record/record.type';
-import { RecordsContextProvider } from '@domain/record/Records.context';
+import { RecordsContextProvider, useRecordsContext } from '@domain/record/Records.context';
 
 const STATUS_LABELS: Record<Record.Status, string> = {
     awaiting_investigation: 'Aguardando investigação',
@@ -21,7 +21,15 @@ const STATUS_LABELS: Record<Record.Status, string> = {
     archived: 'Arquivado',
 };
 
-export function Records() {
+function RecordsContent() {
+    const {
+        isLoading,
+        records,
+        isCreateModalVisible,
+        setIsCreateModalVisible,
+        isEditModalVisible,
+    } = useRecordsContext();
+
     const [selectedRecord, setSelectedRecord] = useState<Record.Model | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [anonymityMap, setAnonymityMap] = useState<Record<number, boolean>>({});
@@ -32,8 +40,23 @@ export function Records() {
     };
 
     const handleInvolvementsUpdated = useCallback((recordId: number, isAnonymous: boolean) => {
-        setAnonymityMap(prev => ({ ...prev, [recordId]: isAnonymous }));
+        setAnonymityMap(prev => {
+            const next = { ...prev };
+            next[recordId] = isAnonymous;
+            return next;
+        });
     }, []);
+
+    useEffect(() => {
+        records.forEach(async record => {
+            if (anonymityMap[record.id] === undefined) {
+                const response = await listInvolvements(record.id);
+                if (!('error' in response) && !(response instanceof Error)) {
+                    handleInvolvementsUpdated(record.id, response.data.is_anonymous);
+                }
+            }
+        });
+    }, [records, anonymityMap, handleInvolvementsUpdated]);
 
     const columns: TableColumnsType<Record.Model> = useMemo(() => [
         {
@@ -48,20 +71,29 @@ export function Records() {
         {
             title: 'Status',
             dataIndex: 'status',
-            render: value => STATUS_LABELS[value as Record.Status] ?? value,
+            render: value => (STATUS_LABELS[value as Record.Status] ? STATUS_LABELS[value as Record.Status] : value),
         },
         {
             title: 'Anonimato',
             dataIndex: 'id',
-            render: (id: number) => {
-                const isAnonymous = anonymityMap[id];
+            render: (id, record) => {
+                const isAnonymous = anonymityMap[id as number];
                 if (isAnonymous === undefined) {
                     return <Spin size="small" />;
                 }
-                return <AnonymityTag isAnonymous={isAnonymous} />;
+                return (
+                    <span
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleOpenInvolvements(record)}
+                        title="Gerenciar pessoas envolvidas neste relato"
+                    >
+                        <AnonymityTag isAnonymous={isAnonymous} />
+                    </span>
+                );
             },
         },
         {
+            title: 'Ações',
             render: (_, record) => (
                 <RecordsActionsCell
                     record={record}
@@ -72,87 +104,54 @@ export function Records() {
     ], [anonymityMap]);
 
     return (
+        <Fragment>
+            <main>
+                <Row justify="space-between" align="middle">
+                    <Typography.Title level={3}>
+                        Relatos
+                    </Typography.Title>
+
+                    <Button
+                        type="primary"
+                        onClick={() => setIsCreateModalVisible(true)}
+                    >
+                        Cadastrar
+                    </Button>
+                </Row>
+
+                <Table
+                    columns={columns}
+                    dataSource={records}
+                    loading={isLoading}
+                />
+            </main>
+
+            <Show when={isCreateModalVisible}>
+                <CreateRecordModal />
+            </Show>
+
+            <Show when={isEditModalVisible}>
+                <EditRecordModal />
+            </Show>
+
+            <RecordInvolvementsDrawer
+                record={selectedRecord}
+                open={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                onInvolvementsUpdated={handleInvolvementsUpdated}
+            />
+        </Fragment>
+    );
+}
+
+export function Records() {
+    return (
         <CompaniesContextProvider>
             {() => (
                 <RecordsContextProvider>
-                    {({
-                        isLoading,
-                        records,
-                        setIsCreateModalVisible,
-                        isCreateModalVisible,
-                        isEditModalVisible,
-                    }) => {
-                        return (
-                            <Fragment>
-                                <RecordsAnonymitySync
-                                    records={records}
-                                    anonymityMap={anonymityMap}
-                                    onUpdate={handleInvolvementsUpdated}
-                                />
-
-                                <main>
-                                    <Row justify="space-between" align="middle">
-                                        <Typography.Title level={3}>
-                                            Relatos
-                                        </Typography.Title>
-
-                                        <Button
-                                            type="primary"
-                                            onClick={() => setIsCreateModalVisible(true)}
-                                        >
-                                            Cadastrar
-                                        </Button>
-                                    </Row>
-
-                                    <Table
-                                        columns={columns}
-                                        dataSource={records}
-                                        loading={isLoading}
-                                    />
-                                </main>
-
-                                <Show when={isCreateModalVisible}>
-                                    <CreateRecordModal />
-                                </Show>
-
-                                <Show when={isEditModalVisible}>
-                                    <EditRecordModal />
-                                </Show>
-
-                                <RecordInvolvementsDrawer
-                                    record={selectedRecord}
-                                    open={isDrawerOpen}
-                                    onClose={() => setIsDrawerOpen(false)}
-                                    onInvolvementsUpdated={handleInvolvementsUpdated}
-                                />
-                            </Fragment>
-                        );
-                    }}
+                    {() => <RecordsContent />}
                 </RecordsContextProvider>
             )}
         </CompaniesContextProvider>
     );
-}
-
-function RecordsAnonymitySync({
-    records,
-    anonymityMap,
-    onUpdate,
-}: {
-    records: Record.Model[];
-    anonymityMap: Record<number, boolean>;
-    onUpdate: (recordId: number, isAnonymous: boolean) => void;
-}) {
-    useEffect(() => {
-        records.forEach(async record => {
-            if (anonymityMap[record.id] === undefined) {
-                const response = await listInvolvements(record.id);
-                if (!('error' in response) && !(response instanceof Error)) {
-                    onUpdate(record.id, response.data.is_anonymous);
-                }
-            }
-        });
-    }, [records, anonymityMap, onUpdate]);
-
-    return null;
 }

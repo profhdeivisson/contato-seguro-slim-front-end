@@ -170,17 +170,17 @@ export function RecordInvolvementsDrawer({
         {
             title: 'Nome',
             dataIndex: ['person', 'name'],
-            render: (_, item) => item.person?.name ?? `#${item.person_id}`,
+            render: (_, item) => (item.person && item.person.name ? item.person.name : `#${item.person_id}`),
         },
         {
             title: 'CPF',
             dataIndex: ['person', 'cpf'],
-            render: (_, item) => (item.person?.cpf ? formatCpf(item.person.cpf) : '-'),
+            render: (_, item) => (item.person && item.person.cpf ? formatCpf(item.person.cpf) : '-'),
         },
         {
             title: 'E-mail',
             dataIndex: ['person', 'email'],
-            render: (_, item) => item.person?.email ?? '-',
+            render: (_, item) => (item.person && item.person.email ? item.person.email : '-'),
         },
         {
             title: 'Ações',
@@ -244,9 +244,10 @@ export function RecordInvolvementsDrawer({
                                         <Select
                                             placeholder="Buscar por nome ou CPF..."
                                             showSearch
-                                            filterOption={(input, option) =>
-                                                String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                            }
+                                            filterOption={(input, option) => {
+                                                const label = option && option.label ? String(option.label) : '';
+                                                return label.toLowerCase().includes(input.toLowerCase());
+                                            }}
                                             options={availablePeople.map(p => ({
                                                 label: `${p.name} (${formatCpf(p.cpf)})`,
                                                 value: p.id,
