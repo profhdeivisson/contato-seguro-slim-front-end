@@ -46,12 +46,14 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🌟 Qualidade, UX e Bônus
-- [ ] Filtro/busca por texto na listagem de pessoas.
-- [ ] Máscaras amigáveis de CPF na digitação.
-- [ ] Feedbacks de sucesso e erro via notificações Ant Design.
-- [ ] Estados de carregamento (*spinners*) e vazios (*empty states*).
-- [ ] Suíte completa de testes unitários passando (`pnpm test`).
-- [ ] Linting sem erros (`pnpm lint` e `pnpm lint:tsc`).
+- [x] Filtro/busca por texto na listagem de pessoas e relatos.
+- [x] Máscaras amigáveis de CPF na digitação.
+- [x] Feedbacks de sucesso e erro via notificações Ant Design.
+- [x] Estados de carregamento (*spinners*) e vazios (*empty states*).
+- [x] Suíte completa de testes unitários passando (`pnpm test`).
+- [x] Linting sem erros (`pnpm lint` e `pnpm lint:tsc`).
+- [x] Responsividade mobile refinada (Sider com breakpoint e colapso, tabelas com scroll horizontal fluido, Drawer responsivo).
+- [x] Dashboard enriquecido com indicadores analíticos de compliance e ações rápidas.
 
 ---
 
