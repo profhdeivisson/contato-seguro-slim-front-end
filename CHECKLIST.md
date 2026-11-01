@@ -5,6 +5,7 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 📋 Pré-Requisitos e Setup
+
 - [x] Skills de apoio instaladas (`brainstorming`, `writing-plans`, `executing-plans`).
 - [x] Documento de Plano de Design criado ([DESIGN_PLAN.md](DESIGN_PLAN.md)).
 - [x] Documento de Plano de Implementação criado ([IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)).
@@ -17,6 +18,7 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🚀 Épico 1: Gestão de Pessoas (`/people`)
+
 - [x] **TDD**: Utilitário de CPF (`cpf.helper.test.ts` e `cpf.helper.ts`).
 - [x] **TDD**: Services de API (`list-people`, `create-person`, `update-person`, `delete-person`).
 - [x] **TDD**: Tratamento de erro 409 (CPF duplicado).
@@ -32,6 +34,7 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🤝 Épico 2: Envolvimentos em Relatos (`/records/{id}/involvements`)
+
 - [x] **TDD**: Services de Envolvimento (`list-involvements`, `create-involvement`, `delete-involvement`).
 - [x] **TDD**: Validação de erro 409 (mesma pessoa vinculada duas vezes ao mesmo relato).
 - [x] **TDD**: Validação da regra de anonimato (`is_anonymous`).
@@ -46,10 +49,11 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🌟 Qualidade, UX e Bônus
+
 - [x] Filtro/busca por texto na listagem de pessoas e relatos.
 - [x] Máscaras amigáveis de CPF na digitação.
 - [x] Feedbacks de sucesso e erro via notificações Ant Design.
-- [x] Estados de carregamento (*spinners*) e vazios (*empty states*).
+- [x] Estados de carregamento (_spinners_) e vazios (_empty states_).
 - [x] Suíte completa de testes unitários passando (`pnpm test`).
 - [x] Linting sem erros (`pnpm lint` e `pnpm lint:tsc`).
 - [x] Responsividade mobile refinada (Sider com breakpoint e colapso, tabelas com scroll horizontal fluido, Drawer responsivo).
@@ -58,7 +62,7 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 📝 Documentação e Finalização
+
 - [ ] Executar testes manuais de todos os fluxos.
 - [ ] Registrar evidências e resultados no `EVIDENCES.md`.
 - [ ] Capturar telas/evidências visuais.
-- [ ] Preencher o formulário obrigatório de encerramento do processo seletivo.
