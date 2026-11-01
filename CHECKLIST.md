@@ -66,4 +66,3 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 - [x] Executar testes manuais de todos os fluxos.
 - [x] Registrar evidências e resultados no `EVIDENCES.md`.
 - [x] Validar responsividade e fluxos no mobile e desktop.
-- [ ] Preencher o formulário obrigatório de encerramento do processo seletivo.
