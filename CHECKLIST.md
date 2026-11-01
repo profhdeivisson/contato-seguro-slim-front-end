@@ -9,10 +9,10 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 - [x] Documento de Plano de Design criado ([DESIGN_PLAN.md](DESIGN_PLAN.md)).
 - [x] Documento de Plano de Implementação criado ([IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)).
 - [x] Checklist de acompanhamento criado ([CHECKLIST.md](CHECKLIST.md)).
-- [ ] Subir containers (`docker compose up -d`).
-- [ ] Rodar migrations no backend (`composer run phinx:migrate`).
-- [ ] Rodar seeds no backend (`composer run phinx:seed`).
-- [ ] Verificar baseline de testes no frontend (`pnpm test`).
+- [x] Subir containers (`docker compose up -d`).
+- [x] Rodar migrations no backend (`composer run phinx:migrate`).
+- [x] Rodar seeds no backend (`composer run phinx:seed`).
+- [x] Verificar baseline de testes no frontend (`pnpm test`).
 
 ---
 
