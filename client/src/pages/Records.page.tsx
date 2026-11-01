@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Button, Row, Spin, type TableColumnsType, Typography } from 'antd';
+import { Button, Col, Input, Row, Space, Spin, type TableColumnsType, Typography } from 'antd';
 
 import { Show } from '@domain/@shared/Show';
 import { Table } from '@domain/@shared/Table';
@@ -33,6 +33,19 @@ function RecordsContent() {
     const [selectedRecord, setSelectedRecord] = useState<Record.Model | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [anonymityMap, setAnonymityMap] = useState<Record<number, boolean>>({});
+    const [searchText, setSearchText] = useState('');
+
+    const filteredRecords = useMemo(() => {
+        if (!searchText.trim()) {
+            return records;
+        }
+        const term = searchText.toLowerCase().trim();
+        return records.filter(r => {
+            const titleMatch = r.title ? r.title.toLowerCase().includes(term) : false;
+            const descMatch = r.description ? r.description.toLowerCase().includes(term) : false;
+            return titleMatch || descMatch;
+        });
+    }, [records, searchText]);
 
     const handleOpenInvolvements = (record: Record.Model) => {
         setSelectedRecord(record);
@@ -106,22 +119,38 @@ function RecordsContent() {
     return (
         <Fragment>
             <main>
-                <Row justify="space-between" align="middle">
-                    <Typography.Title level={3}>
-                        Relatos
-                    </Typography.Title>
+                <Row justify="space-between" align="middle" style={{ marginBottom: 16 }} gutter={[16, 16]}>
+                    <Col xs={24} sm={12}>
+                        <Space align="baseline">
+                            <Typography.Title level={3} style={{ margin: 0 }}>
+                                Relatos
+                            </Typography.Title>
+                            <Typography.Text type="secondary">
+                                ({filteredRecords.length} {filteredRecords.length === 1 ? 'registro' : 'registros'})
+                            </Typography.Text>
+                        </Space>
+                    </Col>
 
-                    <Button
-                        type="primary"
-                        onClick={() => setIsCreateModalVisible(true)}
-                    >
-                        Cadastrar
-                    </Button>
+                    <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, flexWrap: 'wrap' }}>
+                        <Input.Search
+                            placeholder="Buscar relatos por título ou descrição..."
+                            allowClear
+                            value={searchText}
+                            onChange={e => setSearchText(e.target.value)}
+                            style={{ maxWidth: 320, width: '100%' }}
+                        />
+                        <Button
+                            type="primary"
+                            onClick={() => setIsCreateModalVisible(true)}
+                        >
+                            Cadastrar
+                        </Button>
+                    </Col>
                 </Row>
 
                 <Table
                     columns={columns}
-                    dataSource={records}
+                    dataSource={filteredRecords}
                     loading={isLoading}
                 />
             </main>
