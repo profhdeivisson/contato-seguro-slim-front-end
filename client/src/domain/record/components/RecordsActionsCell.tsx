@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { App, Button, Popconfirm, Space } from 'antd';
 
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, TeamOutlined } from '@ant-design/icons';
 import { handleServiceError, hasServiceError } from '@domain/@shared/service.helper';
 import { sleep } from '@domain/@shared/sleep';
 
@@ -10,9 +10,12 @@ import { deleteRecord } from '../api/delete-record.service';
 import type { Record } from '../record.type';
 import { useRecordsContext } from '../Records.context';
 
-type Props = { record: Record.Model };
+type Props = {
+    record: Record.Model;
+    onOpenInvolvements?: (record: Record.Model) => void;
+};
 
-export function RecordsActionsCell({ record }: Props) {
+export function RecordsActionsCell({ record, onOpenInvolvements }: Props) {
     const [isPopconfirmVisible, setIsPopconfirmVisible] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
@@ -43,6 +46,15 @@ export function RecordsActionsCell({ record }: Props) {
 
     return (
         <Space size="middle">
+            {onOpenInvolvements && (
+                <Button
+                    type="text"
+                    icon={<TeamOutlined />}
+                    title="Envolvidos"
+                    onClick={() => onOpenInvolvements(record)}
+                />
+            )}
+
             <Button
                 type="text"
                 icon={<EditOutlined />}
