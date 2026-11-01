@@ -1,6 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-
 import { Request } from '@domain/@shared/request';
+import { describe, expect, it, vi } from 'vitest';
 
 import { createPerson } from './create-person.service';
 import { deletePerson } from './delete-person.service';
