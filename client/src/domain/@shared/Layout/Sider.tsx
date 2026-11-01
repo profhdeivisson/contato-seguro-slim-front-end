@@ -14,16 +14,17 @@ export function Sider({ collapsed, onCollapse, items, defaultSelectedKeys }: Sid
             collapsible
             collapsed={collapsed}
             onCollapse={onCollapse}
-            breakpoint="lg"
-            collapsedWidth={0}
             style={{ background: token.colorBgContainer }}
         >
+            <div style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 16px', background: '#002140', color: '#fff', fontWeight: 600, fontSize: 14 }}>
+                Contato Seguro
+            </div>
             <AntdMenu
                 mode="inline"
                 theme="dark"
                 items={items}
                 defaultSelectedKeys={defaultSelectedKeys}
-                style={{ height: '100%', borderRight: 0 }}
+                style={{ height: 'calc(100% - 56px)', borderRight: 0 }}
             />
         </AntdSider>
     );

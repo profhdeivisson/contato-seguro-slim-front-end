@@ -1,6 +1,20 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { Button, Col, Input, Row, Space, type TableColumnsType, Typography } from 'antd';
+import {
+    Button,
+    Card,
+    Col,
+    Divider,
+    Empty,
+    Grid,
+    Input,
+    Pagination,
+    Row,
+    Space,
+    Spin,
+    type TableColumnsType,
+    Typography,
+} from 'antd';
 
 import { Show } from '@domain/@shared/Show';
 import { Table } from '@domain/@shared/Table';
@@ -37,9 +51,32 @@ const COLUMNS: TableColumnsType<Person.Model> = [
         render: value => dayjs(value).format('DD/MM/YYYY'),
     },
     {
+        title: 'Ações',
+        fixed: 'right',
+        width: 100,
         render: (_, record) => <PeopleActionsCell person={record} />,
     },
 ];
+
+function useIsMobile() {
+    const screens = Grid.useBreakpoint();
+    const [isMobile, setIsMobile] = useState(
+        typeof window !== 'undefined' ? window.innerWidth < 768 : false
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    if (screens.md !== undefined) {
+        return !screens.md;
+    }
+    return isMobile;
+}
 
 function PeopleContent() {
     const {
@@ -50,7 +87,10 @@ function PeopleContent() {
         isEditModalVisible,
     } = usePeopleContext();
 
+    const isMobile = useIsMobile();
     const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
 
     const filteredPeople = useMemo(() => {
         if (!searchText.trim()) {
@@ -66,6 +106,15 @@ function PeopleContent() {
             return nameMatch || cpfMatch || emailMatch;
         });
     }, [people, searchText]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchText]);
+
+    const paginatedPeople = useMemo(() => {
+        const start = (currentPage - 1) * pageSize;
+        return filteredPeople.slice(start, start + pageSize);
+    }, [filteredPeople, currentPage]);
 
     return (
         <Fragment>
@@ -99,11 +148,79 @@ function PeopleContent() {
                     </Col>
                 </Row>
 
-                <Table
-                    columns={COLUMNS}
-                    dataSource={filteredPeople}
-                    loading={isLoading}
-                />
+                {isMobile ? (
+                    <Spin spinning={isLoading}>
+                        {filteredPeople.length === 0 ? (
+                            <Empty
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                description="Não há dados"
+                            />
+                        ) : (
+                            <div>
+                                {paginatedPeople.map(person => (
+                                    <Card
+                                        key={person.id}
+                                        size="small"
+                                        style={{
+                                            marginBottom: 12,
+                                            borderRadius: 8,
+                                            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                            <Typography.Text strong type="secondary">
+                                                #{person.id}
+                                            </Typography.Text>
+                                            <Typography.Text strong style={{ fontSize: 15 }}>
+                                                {person.name}
+                                            </Typography.Text>
+                                        </div>
+
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, margin: '8px 0', fontSize: 13 }}>
+                                            <div>
+                                                <Typography.Text type="secondary">CPF: </Typography.Text>
+                                                <Typography.Text>{formatCpf(person.cpf)}</Typography.Text>
+                                            </div>
+                                            <div>
+                                                <Typography.Text type="secondary">E-mail: </Typography.Text>
+                                                <Typography.Text>{person.email}</Typography.Text>
+                                            </div>
+                                            <div>
+                                                <Typography.Text type="secondary">Nascimento: </Typography.Text>
+                                                <Typography.Text>{dayjs(person.birth_date).format('DD/MM/YYYY')}</Typography.Text>
+                                            </div>
+                                        </div>
+
+                                        <Divider style={{ margin: '8px 0' }} />
+
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                            <PeopleActionsCell person={person} />
+                                        </div>
+                                    </Card>
+                                ))}
+
+                                {filteredPeople.length > pageSize && (
+                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+                                        <Pagination
+                                            current={currentPage}
+                                            pageSize={pageSize}
+                                            total={filteredPeople.length}
+                                            onChange={page => setCurrentPage(page)}
+                                            size="small"
+                                            showSizeChanger={false}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </Spin>
+                ) : (
+                    <Table
+                        columns={COLUMNS}
+                        dataSource={filteredPeople}
+                        loading={isLoading}
+                    />
+                )}
             </main>
 
             <Show when={isCreateModalVisible}>
