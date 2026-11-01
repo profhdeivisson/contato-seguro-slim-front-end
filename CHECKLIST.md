@@ -17,17 +17,17 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🚀 Épico 1: Gestão de Pessoas (`/people`)
-- [ ] **TDD**: Utilitário de CPF (`cpf.helper.test.ts` e `cpf.helper.ts`).
-- [ ] **TDD**: Services de API (`list-people`, `create-person`, `update-person`, `delete-person`).
-- [ ] **TDD**: Tratamento de erro 409 (CPF duplicado).
-- [ ] Criar tipagem `person.type.ts`.
-- [ ] Criar Contexto `People.context.tsx`.
-- [ ] Criar componente de formulário `PersonFields.tsx` (Nome, CPF, E-mail, Data de Nascimento).
-- [ ] Criar modal de criação `CreatePersonModal.tsx`.
-- [ ] Criar modal de edição `EditPersonModal.tsx`.
-- [ ] Criar célula de ações com confirmação `PeopleActionsCell.tsx`.
-- [ ] Criar página de listagem `People.page.tsx`.
-- [ ] Registrar rota `/people` no `router.tsx` e menu em `MainLayout.tsx`.
+- [x] **TDD**: Utilitário de CPF (`cpf.helper.test.ts` e `cpf.helper.ts`).
+- [x] **TDD**: Services de API (`list-people`, `create-person`, `update-person`, `delete-person`).
+- [x] **TDD**: Tratamento de erro 409 (CPF duplicado).
+- [x] Criar tipagem `person.type.ts`.
+- [x] Criar Contexto `People.context.tsx`.
+- [x] Criar componente de formulário `PersonFields.tsx` (Nome, CPF, E-mail, Data de Nascimento).
+- [x] Criar modal de criação `CreatePersonModal.tsx`.
+- [x] Criar modal de edição `EditPersonModal.tsx`.
+- [x] Criar célula de ações com confirmação `PeopleActionsCell.tsx`.
+- [x] Criar página de listagem `People.page.tsx`.
+- [x] Registrar rota `/people` no `router.tsx` e menu em `MainLayout.tsx`.
 
 ---
 
