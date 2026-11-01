@@ -14,6 +14,8 @@ export function Sider({ collapsed, onCollapse, items, defaultSelectedKeys }: Sid
             collapsible
             collapsed={collapsed}
             onCollapse={onCollapse}
+            breakpoint="lg"
+            collapsedWidth={0}
             style={{ background: token.colorBgContainer }}
         >
             <AntdMenu

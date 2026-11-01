@@ -8,8 +8,8 @@ export function Content() {
     const currentYear = dayjs().year();
 
     return (
-        <AntdLayout style={{ padding: '0 24px' }}>
-            <AntdLayout.Content style={{ padding: 24, margin: 0, minHeight: 200 }}>
+        <AntdLayout style={{ padding: '0 clamp(8px, 2vw, 24px)' }}>
+            <AntdLayout.Content style={{ padding: 'clamp(12px, 2vw, 24px)', margin: 0, minHeight: 200 }}>
                 <Outlet />
             </AntdLayout.Content>
 

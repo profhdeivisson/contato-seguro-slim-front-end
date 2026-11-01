@@ -12,6 +12,7 @@ export function Table<RecordType extends { id: number }>(props: Props<RecordType
 
     return (
         <AntdTable
+            scroll={{ x: 'max-content' }}
             {...props}
             rowKey={row => row.id}
             rootClassName="table-horizontal-scroll"

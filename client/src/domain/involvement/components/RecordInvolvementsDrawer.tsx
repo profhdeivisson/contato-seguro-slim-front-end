@@ -205,12 +205,14 @@ export function RecordInvolvementsDrawer({
         },
     ];
 
+    const drawerWidth = typeof window !== 'undefined' && window.innerWidth < 768 ? '100%' : 720;
+
     return (
         <Drawer
             open={open}
             onClose={onClose}
             title="Gestão de Envolvidos"
-            width={720}
+            width={drawerWidth}
         >
             {record && (
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -234,8 +236,8 @@ export function RecordInvolvementsDrawer({
                             layout="vertical"
                             onFinish={handleAddInvolvement}
                         >
-                            <Row gutter={16}>
-                                <Col span={14}>
+                            <Row gutter={[16, 16]}>
+                                <Col xs={24} sm={14}>
                                     <Form.Item<FormValues>
                                         name="person_id"
                                         label="Pessoa"
@@ -255,7 +257,7 @@ export function RecordInvolvementsDrawer({
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span={10}>
+                                <Col xs={24} sm={10}>
                                     <Form.Item<FormValues>
                                         name="type"
                                         label="Tipo de Envolvimento"
@@ -293,6 +295,7 @@ export function RecordInvolvementsDrawer({
                             dataSource={involvements}
                             loading={isLoading}
                             pagination={false}
+                            scroll={{ x: 'max-content' }}
                             locale={{
                                 emptyText: (
                                     <Empty
