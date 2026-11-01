@@ -32,16 +32,16 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 ---
 
 ## 🤝 Épico 2: Envolvimentos em Relatos (`/records/{id}/involvements`)
-- [ ] **TDD**: Services de Envolvimento (`list-involvements`, `create-involvement`, `delete-involvement`).
-- [ ] **TDD**: Validação de erro 409 (mesma pessoa vinculada duas vezes ao mesmo relato).
-- [ ] **TDD**: Validação da regra de anonimato (`is_anonymous`).
-- [ ] Criar tipagem `involvement.type.ts`.
-- [ ] Mapear papéis de envolvidos (`whistleblower`, `witness`, `victim`, `denounced`) com tags visuais.
-- [ ] Criar componente de Drawer ou Modal para gerenciar envolvidos (`RecordInvolvementsDrawer.tsx`).
-- [ ] Adicionar formulário de vínculo (Select de Pessoas + Select de Papel).
-- [ ] Implementar ação de remoção/desvinculação de envolvido.
-- [ ] Atualizar tabela de Relatos (`Records.page.tsx`) com indicador visual (Anônimo / Identificado).
-- [ ] Adicionar ação "Envolvidos" na tabela de relatos (`RecordsActionsCell.tsx`).
+- [x] **TDD**: Services de Envolvimento (`list-involvements`, `create-involvement`, `delete-involvement`).
+- [x] **TDD**: Validação de erro 409 (mesma pessoa vinculada duas vezes ao mesmo relato).
+- [x] **TDD**: Validação da regra de anonimato (`is_anonymous`).
+- [x] Criar tipagem `involvement.type.ts`.
+- [x] Mapear papéis de envolvidos (`whistleblower`, `witness`, `victim`, `denounced`) com tags visuais.
+- [x] Criar componente de Drawer ou Modal para gerenciar envolvidos (`RecordInvolvementsDrawer.tsx`).
+- [x] Adicionar formulário de vínculo (Select de Pessoas + Select de Papel).
+- [x] Implementar ação de remoção/desvinculação de envolvido.
+- [x] Atualizar tabela de Relatos (`Records.page.tsx`) com indicador visual (Anônimo / Identificado).
+- [x] Adicionar ação "Envolvidos" na tabela de relatos (`RecordsActionsCell.tsx`).
 
 ---
 
