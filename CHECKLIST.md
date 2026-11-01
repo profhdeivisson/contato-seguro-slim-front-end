@@ -57,12 +57,13 @@ Este checklist serve para acompanhar o progresso de ponta a ponta da entrega do 
 - [x] Suíte completa de testes unitários passando (`pnpm test`).
 - [x] Linting sem erros (`pnpm lint` e `pnpm lint:tsc`).
 - [x] Responsividade mobile refinada (Sider com breakpoint e colapso, tabelas com scroll horizontal fluido, Drawer responsivo).
-- [x] Dashboard enriquecido com indicadores analíticos de compliance e ações rápidas.
+- [x] Dashboard enriquecido com indicadores analíticos de compliance.
 
 ---
 
 ## 📝 Documentação e Finalização
 
-- [ ] Executar testes manuais de todos os fluxos.
-- [ ] Registrar evidências e resultados no `EVIDENCES.md`.
-- [ ] Capturar telas/evidências visuais.
+- [x] Executar testes manuais de todos os fluxos.
+- [x] Registrar evidências e resultados no `EVIDENCES.md`.
+- [x] Validar responsividade e fluxos no mobile e desktop.
+- [ ] Preencher o formulário obrigatório de encerramento do processo seletivo.
